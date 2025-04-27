@@ -21,4 +21,12 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\Software Projects\ExpenseTracker\Xpenso\Expenso\Expenso\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="D:\Software Projects\ExpenseTracker\Xpenso\Expenso\Expenso\.editorconfig" />
+  </ItemGroup>
+
 </Project>
