@@ -1,9 +1,10 @@
-﻿using FluentValidation;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using MonthlyExpenseTracker.Data;
 using MonthlyExpenseTracker.DTO;
 using MonthlyExpenseTracker.Helper.Mapper;
+using MonthlyExpenseTracker.Helper.Middleware;
 using MonthlyExpenseTracker.Helper.Validator;
 using MonthlyExpenseTracker.Services;
 using MonthlyExpenseTracker.Services.Implementation;
@@ -52,6 +53,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseCors("AllowAll");
+// Add custom exception handling middleware
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 
