@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using MonthlyExpenseTracker.DTO;
 
 namespace MonthlyExpenseTracker.Helper.Validator
@@ -33,7 +33,9 @@ namespace MonthlyExpenseTracker.Helper.Validator
     {
         public ExpenseDeleteValidator()
         {
-            RuleFor(x => x).GreaterThan(0).WithMessage("Expense ID must be greater than zero.");
+            RuleFor(x => x)
+            .NotEmpty().WithMessage("Expense ID is required.")
+            .GreaterThan(0).WithMessage("Expense ID must be greater than zero.");
         }
     }
 }
