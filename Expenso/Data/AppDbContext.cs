@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MonthlyExpenseTracker.EntityModels;
 
 namespace MonthlyExpenseTracker.Data
@@ -9,6 +9,8 @@ namespace MonthlyExpenseTracker.Data
 
         public DbSet<Category> Categories => Set<Category>();   
         public DbSet<Expense> Expenses => Set<Expense>();   
+        public DbSet<tblUsers> Users => Set<tblUsers>();   
+        public DbSet<tblRole> Role => Set<tblRole>();   
 
     }
 }

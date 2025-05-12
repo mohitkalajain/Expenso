@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MonthlyExpenseTracker.Data;
 using MonthlyExpenseTracker.EntityModels;
 
 namespace MonthlyExpenseTracker.Controllers
 {
-    //
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase

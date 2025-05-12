@@ -1,16 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MonthlyExpenseTracker.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MonthlyExpenseTracker.DTO;
-using MonthlyExpenseTracker.EntityModels;
-using MonthlyExpenseTracker.Helper.Mapper;
 using MonthlyExpenseTracker.Helper.ResponseVM;
 using MonthlyExpenseTracker.Helper.Validator;
-using MonthlyExpenseTracker.Services;
 using MonthlyExpenseTracker.Services.Interface;
 
 namespace MonthlyExpenseTracker.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ExpenseController : ControllerBase
