@@ -8,7 +8,7 @@ using MonthlyExpenseTracker.Services.Interface;
 namespace MonthlyExpenseTracker.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("/api/expense")]
     [ApiController]
     public class ExpenseController : ControllerBase
     {
@@ -18,7 +18,9 @@ namespace MonthlyExpenseTracker.Controllers
             _expenseService = expenseService;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("get/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetExpenseById(int id)
         {
             try
@@ -39,7 +41,9 @@ namespace MonthlyExpenseTracker.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("getall")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllExpenses()
         {
             try
@@ -55,8 +59,11 @@ namespace MonthlyExpenseTracker.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddExpense([FromBody] ExpenseDTO expenseDto)
+        [HttpPost("create")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Create([FromBody] ExpenseDTO expenseDto)
         {
             ExpenseValidator _addExpencevalidator = new ExpenseValidator();
             var validationResult = _addExpencevalidator.Validate(expenseDto);
@@ -79,8 +86,11 @@ namespace MonthlyExpenseTracker.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateExpense(int id, [FromBody] ExpenseDTO expenseDto)
+        [HttpPut("update/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Update(int id, [FromBody] ExpenseDTO expenseDto)
         {
             try
             {
@@ -104,8 +114,12 @@ namespace MonthlyExpenseTracker.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteExpense(int id)
+        [HttpDelete("delete/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Delete(int id)
         {
             ExpenseDeleteValidator _deleteValidator=new ExpenseDeleteValidator();
             var validationResult = _deleteValidator.Validate(id);
@@ -136,6 +150,9 @@ namespace MonthlyExpenseTracker.Controllers
         }
 
         [HttpGet("monthly-summary")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetMonthlySummary(int year, int month)
         {
             try
