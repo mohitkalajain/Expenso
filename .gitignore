@@ -303,3 +303,5 @@ orleans.codegen.cs
 *~
 *.bak
 *.swp 
+
+*.dbmdl
