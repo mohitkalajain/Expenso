@@ -2,6 +2,7 @@ using System.Text;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +12,7 @@ using MonthlyExpenseTracker.Constants;
 using MonthlyExpenseTracker.Data;
 using MonthlyExpenseTracker.DTO;
 using MonthlyExpenseTracker.EntityModels;
+using MonthlyExpenseTracker.Helper.Authorization;
 using MonthlyExpenseTracker.Helper.Jwt;
 using MonthlyExpenseTracker.Helper.Middleware;
 using MonthlyExpenseTracker.Helper.Validator;
@@ -28,6 +30,7 @@ builder.Services.AddScoped<IExpenseService, ExpenseService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPasswordHasher<tblUsers>, PasswordHasher<tblUsers>>();
+builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, AuthorizationResponseHandler>();
 
 
 // ✅ Register Validators from Assembly (New Way)

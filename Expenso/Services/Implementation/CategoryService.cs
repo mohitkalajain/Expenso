@@ -19,6 +19,15 @@ namespace MonthlyExpenseTracker.Services.Implementation
             // Map DTO to entity
             var category = Mapper.Map<CategoryDTO, Category>(categoryDto);
 
+            var existingCategory = await _xpensoContext.Categories
+                                               .FirstOrDefaultAsync(c => c.Name.ToLower() == category.Name.ToLower()); 
+
+            if (existingCategory is not null)
+            {
+                // Category already exists, throw an exception or return a meaningful response
+                throw new InvalidOperationException("Category already exists.");
+            }
+
             // Add the Category to the database
             await _xpensoContext.Categories.AddAsync(category);
             await _xpensoContext.SaveChangesAsync();

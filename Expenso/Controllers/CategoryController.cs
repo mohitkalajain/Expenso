@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MonthlyExpenseTracker.DTO;
 using MonthlyExpenseTracker.Helper.ResponseVM;
@@ -24,23 +25,24 @@ namespace MonthlyExpenseTracker.Controllers
         [HttpGet("get/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetCategoryById(int id)
         {
             try
             {
                 var result = await _categoryService.GetByIdAsync(id);
-                var response = new ResponseVm<CategoryDTO>(result, "Category fetched successfully", 200);
+                var response = new ResponseVm<CategoryDTO>(result, "Category fetched successfully", StatusCodes.Status200OK);
                 return Ok(response);
             }
             catch (KeyNotFoundException ex)
             {
-                var response = new ResponseVm<CategoryDTO>(ex.Message, "Category not found", 404);
+                var response = new ResponseVm<CategoryDTO>(ex.Message, "Category not found", StatusCodes.Status404NotFound);
                 return NotFound(response);
             }
             catch (Exception ex)
             {
-                var response = new ResponseVm<CategoryDTO>(ex.Message, "An error occurred", 500);
-                return StatusCode(500, response);
+                var response = new ResponseVm<CategoryDTO>(ex.Message, "An error occurred", StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
         }
 
@@ -55,12 +57,12 @@ namespace MonthlyExpenseTracker.Controllers
             try
             {
                 var result = await _categoryService.GetAllAsync();
-                var response = new ResponseVm<IEnumerable<CategoryDTO>>(result, "Categories fetched successfully", 200);
+                var response = new ResponseVm<IEnumerable<CategoryDTO>>(result, "Categories fetched successfully", StatusCodes.Status200OK);
                 return Ok(response);
             }
             catch (Exception ex)
             {
-                var response = new ResponseVm<IEnumerable<CategoryDTO>>(ex.Message, "Failed to fetch categories", 500);
+                var response = new ResponseVm<IEnumerable<CategoryDTO>>(ex.Message, "Failed to fetch categories", StatusCodes.Status500InternalServerError);
                 return StatusCode(500, response);
             }
         }
@@ -69,6 +71,7 @@ namespace MonthlyExpenseTracker.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Produces("application/json")]
         public async Task<IActionResult> Create([FromBody] CategoryDTO categoryDto)
@@ -78,19 +81,24 @@ namespace MonthlyExpenseTracker.Controllers
             if (!validationResult.IsValid)
             {
                 var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-                var response = new ResponseVm<string>(errors, "Validation failed", 400);
+                var response = new ResponseVm<string>(errors, "Validation failed", StatusCodes.Status400BadRequest);
                 return BadRequest(response);
             }
             try
             {
                 await _categoryService.AddAsync(categoryDto);
-                var response = new ResponseVm<string>("Category created successfully", "Success", 201);
+                var response = new ResponseVm<string>("Category created successfully", "Success", StatusCodes.Status201Created);
                 return StatusCode(201, response);
+            }
+            catch (InvalidOperationException ex)
+            {
+                var response = new ResponseVm<string>(ex.Message, "Category already exists", StatusCodes.Status409Conflict);
+                return Conflict(response);  
             }
             catch (Exception ex)
             {
-                var response = new ResponseVm<string>(ex.Message, "Failed to create category", 500);
-                return StatusCode(500, response);
+                var response = new ResponseVm<string>(ex.Message, "Failed to create category", StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
         }
 
@@ -109,18 +117,18 @@ namespace MonthlyExpenseTracker.Controllers
 
                 await _categoryService.UpdateAsync(categoryDto);
 
-                var response = new ResponseVm<string>("Category updated successfully", "Success", 200);
+                var response = new ResponseVm<string>("Category updated successfully", "Success", StatusCodes.Status200OK);
                 return Ok(response);
             }
             catch (KeyNotFoundException ex)
             {
-                var response = new ResponseVm<string>(ex.Message, "Category not found", 404);
+                var response = new ResponseVm<string>(ex.Message, "Category not found", StatusCodes.Status404NotFound);
                 return NotFound(response);
             }
             catch (Exception ex)
             {
-                var response = new ResponseVm<string>(ex.Message, "An error occurred while updating category", 500);
-                return StatusCode(500, response);
+                var response = new ResponseVm<string>(ex.Message, "An error occurred while updating category", StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
         }
 
@@ -139,7 +147,7 @@ namespace MonthlyExpenseTracker.Controllers
             if (!validationResult.IsValid)
             {
                 var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-                var response = new ResponseVm<string>(errors, "Validation failed", 400);
+                var response = new ResponseVm<string>(errors, "Validation failed", StatusCodes.Status400BadRequest);
                 return BadRequest(response);
             }
 
@@ -147,18 +155,18 @@ namespace MonthlyExpenseTracker.Controllers
             {
                 await _categoryService.DeleteAsync(id);
 
-                var response = new ResponseVm<string>("Category deleted successfully", "Success", 200);
+                var response = new ResponseVm<string>("Category deleted successfully", "Success", StatusCodes.Status200OK);
                 return Ok(response);
             }
             catch (KeyNotFoundException ex)
             {
-                var response = new ResponseVm<string>(ex.Message, "Category not found", 404);
+                var response = new ResponseVm<string>(ex.Message, "Category not found", StatusCodes.Status404NotFound);
                 return NotFound(response);
             }
             catch (Exception ex)
             {
-                var response = new ResponseVm<string>(ex.Message, "An error occurred while deleting category", 500);
-                return StatusCode(500, response);
+                var response = new ResponseVm<string>(ex.Message, "An error occurred while deleting category", StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
         }
     }
